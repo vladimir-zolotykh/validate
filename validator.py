@@ -75,6 +75,22 @@ class Component:
 
 
 class TestComponent(unittest.TestCase):
+    def test_nok1(self):
+        with self.assertRaises(TypeError):
+            Component("wood", "10", "FOO")
+
+    def test_nok2(self):
+        with self.assertRaises(ValueError):
+            Component("Widget", "metal", 5)
+
+    def test_nok3(self):
+        with self.assertRaises(ValueError):
+            Component("WIDGET", "metle", 5)
+
+    def test_nok4(self):
+        with self.assertRaises(ValueError):
+            Component("WIDGET", "metal", -5)
+
     def test_ok1(self):
         self.assertEqual(str(Component("wood", 10, "FOO")), "wood, 10, FOO")
 
