@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
-"""
->>> Component('wood', 10, 'FOO')
-"""
 from abc import ABC, abstractmethod
+import unittest
 
 
 class Validator(ABC):
@@ -72,8 +70,14 @@ class Component:
         self.quantity = quantity
         self.name = name
 
+    def __str__(self):
+        return ", ".join(map(str, (self.kind, self.quantity, self.name)))
+
+
+class TestComponent(unittest.TestCase):
+    def test_ok1(self):
+        self.assertEqual(str(Component("wood", 10, "FOO")), "wood, 10, FOO")
+
 
 if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
+    unittest.main()
