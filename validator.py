@@ -94,7 +94,7 @@ class TestComponent(unittest.TestCase):
             Component("WIDGET", "metal", -5)
 
     def test_ok1(self):
-        self.assertEqual(str(Component("wood", 10, "Foo")), "wood, 10, FOO")
+        self.assertEqual(str(Component("wood", 10, "FOO")), "wood, 10, FOO")
 
 
 if __name__ == "__main__":
