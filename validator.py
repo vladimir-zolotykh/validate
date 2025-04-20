@@ -57,7 +57,9 @@ class String(Validator):
         if len(value) > self.maxsize:
             raise ValueError(f"Expected len({value!r}) <= {self.maxsize}")
         if not self.predicate(value):
-            raise ValueError(f"Expected {self.predicate}({value}) is true")
+            raise ValueError(
+                f"Expected {self.predicate.__name__}({value!r})" f" is true"
+            )
 
 
 class Component:
@@ -92,7 +94,7 @@ class TestComponent(unittest.TestCase):
             Component("WIDGET", "metal", -5)
 
     def test_ok1(self):
-        self.assertEqual(str(Component("wood", 10, "FOO")), "wood, 10, FOO")
+        self.assertEqual(str(Component("wood", 10, "Foo")), "wood, 10, FOO")
 
 
 if __name__ == "__main__":
