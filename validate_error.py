@@ -41,16 +41,26 @@ class NumberHighError(NumberError):
 
 
 class StringError(ValidateError):
-    pass
+    def __init__(self, value, minsize=None, maxsize=None, predicate=None):
+        super().__init__(value)
+        self.minsize = minsize
+        self.maxsize = maxsize
+        self.predicate = predicate
 
 
 class StringShortError(StringError):
-    pass
+    def __str__(self):
+        return f"Expected len({self.value!r}) >= {self.minsize}"
 
 
 class StringLongError(StringError):
-    pass
+    def __str__(self):
+        return f"Expected len({self.value!r}) <= {self.maxsize}"
 
 
 class StringPredicateError(StringError):
-    pass
+    def __str__(self):
+        # fmt: off
+        return (f"Expected {self.predicate.__name__}({self.value!r})"
+                f" is true")
+        # fmt: on
