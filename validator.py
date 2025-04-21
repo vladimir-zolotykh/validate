@@ -29,7 +29,7 @@ class OneOf(Validator):
 
     def validate(self, value):
         if value not in self.options:
-            raise VE.OneOfError(value)
+            raise VE.OneOfError(value, self.options)
 
 
 class Number(Validator):

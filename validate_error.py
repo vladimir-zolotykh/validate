@@ -10,7 +10,12 @@ class ValidateError(Exception):
 
 
 class OneOfError(ValidateError):
-    pass
+    def __init__(self, value, options):
+        self.options = options
+        super().__init__(value)
+
+    def __str__(self):
+        return f"Expected {self.value!r} to be one of {self.options}"
 
 
 class NumberError(ValidateError):
