@@ -18,7 +18,8 @@ class NumberError(ValidateError):
 
 
 class NumberTypeError(NumberError):
-    pass
+    def __str__(self):
+        return f"Expected {self.value!r} of type int or float"
 
 
 class NumberLowErrror(NumberError):
