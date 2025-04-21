@@ -22,8 +22,13 @@ class NumberTypeError(NumberError):
         return f"Expected {self.value!r} of type int or float"
 
 
-class NumberLowErrror(NumberError):
-    pass
+class NumberLowError(NumberError):
+    def __init__(self, value, minvalue):
+        super().__init__(value)
+        self.minvalue = minvalue
+
+    def __str__(self):
+        return f"Expected {self.value!r} >= {self.minvalue}"
 
 
 class NuberHighError(NumberError):

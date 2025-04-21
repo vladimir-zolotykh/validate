@@ -39,11 +39,10 @@ class Number(Validator):
 
     def validate(self, value):
         if not isinstance(value, (int, float)):
-            # raise TypeError(f"Expected {value!r} of type int or float")
             raise VE.NumberTypeError(value)
         if value < self.minvalue:
             # raise ValueError(f"Expected {value!r} >= {self.minvalue}")
-            raise VE.NumberLowErrror(value)
+            raise VE.NumberLowError(value, self.minvalue)
         if self.maxvalue < value:
             # raise ValueError(f"Expected {value!r} <= {self.maxvalue}")
             raise VE.NumberHighError(value)
@@ -93,7 +92,7 @@ class TestComponent(unittest.TestCase):
             Component("WIDGET", "metle", 5)
 
     def test_nok30(self):
-        with self.assertRaises(VE.NumberLowErrror):
+        with self.assertRaises(VE.NumberLowError):
             Component("WIDGET", "metal", -5)
 
     def test_nok40(self):
