@@ -3,6 +3,7 @@
 # PYTHON_ARGCOMPLETE_OK
 from abc import ABC, abstractmethod
 import unittest
+import validate_error as VE
 
 
 class Validator(ABC):
@@ -28,7 +29,7 @@ class OneOf(Validator):
 
     def validate(self, value):
         if value not in self.options:
-            raise ValueError(f"Expected {value!r} be one of {self.options}")
+            raise VE.OneOfError(value)
 
 
 class Number(Validator):
@@ -38,11 +39,14 @@ class Number(Validator):
 
     def validate(self, value):
         if not isinstance(value, (int, float)):
-            raise TypeError(f"Expected {value!r} of type int or float")
+            # raise TypeError(f"Expected {value!r} of type int or float")
+            raise VE.NumberTypeError(value)
         if value < self.minvalue:
-            raise ValueError(f"Expected {value!r} >= {self.minvalue}")
+            # raise ValueError(f"Expected {value!r} >= {self.minvalue}")
+            raise VE.NumberLowErrror(value)
         if self.maxvalue < value:
-            raise ValueError(f"Expected {value!r} <= {self.maxvalue}")
+            # raise ValueError(f"Expected {value!r} <= {self.maxvalue}")
+            raise VE.NumberHighError(value)
 
 
 class String(Validator):
@@ -53,48 +57,54 @@ class String(Validator):
 
     def validate(self, value):
         if len(value) < self.minsize:
-            raise ValueError(f"Expected len({value!r}) >= {self.minsize}")
+            # raise ValueError(f"Expected len({value!r}) >= {self.minsize}")
+            raise VE.StringShortError(value)
         if len(value) > self.maxsize:
-            raise ValueError(f"Expected len({value!r}) <= {self.maxsize}")
+            # raise ValueError(f"Expected len({value!r}) <= {self.maxsize}")
+            raise VE.StringLongError(value)
         if not self.predicate(value):
-            raise ValueError(
-                f"Expected {self.predicate.__name__}({value!r})" f" is true"
-            )
+            # raise ValueError(
+            #     f"Expected {self.predicate.__name__}({value!r})" f" is true"
+            # )
+            raise VE.StringPredicateError(value)
 
 
 class Component:
+    name = String(3, 10, str.isupper)
     kind = OneOf("wood", "metal", "plastic")
     quantity = Number(3, 25)
-    name = String(3, 10, str.isupper)
 
-    def __init__(self, kind, quantity, name):
+    def __init__(self, name, kind, quantity):
         self.kind = kind
         self.quantity = quantity
         self.name = name
 
     def __str__(self):
-        return ", ".join(map(str, (self.kind, self.quantity, self.name)))
+        return ", ".join(map(str, (self.name, self.kind, self.quantity)))
 
 
 class TestComponent(unittest.TestCase):
-    def test_nok1(self):
-        with self.assertRaises(TypeError):
-            Component("wood", "10", "FOO")
-
-    def test_nok2(self):
-        with self.assertRaises(ValueError):
+    def test_nok10(self):
+        with self.assertRaises(VE.StringPredicateError):
             Component("Widget", "metal", 5)
 
-    def test_nok3(self):
-        with self.assertRaises(ValueError):
+    def test_nok20(self):
+        with self.assertRaises(VE.OneOfError):
             Component("WIDGET", "metle", 5)
 
-    def test_nok4(self):
-        with self.assertRaises(ValueError):
+    def test_nok30(self):
+        with self.assertRaises(VE.NumberLowErrror):
             Component("WIDGET", "metal", -5)
 
-    def test_ok1(self):
-        self.assertEqual(str(Component("wood", 10, "FOO")), "wood, 10, FOO")
+    def test_nok40(self):
+        with self.assertRaises(VE.NumberTypeError):
+            Component("WIDGET", "metal", "V")
+
+    def test_ok10(self):
+        # fmt: off
+        self.assertEqual(str(Component("WIDGET", "metal", 5)),
+                         "WIDGET, metal, 5")
+        # fmt: on
 
 
 if __name__ == "__main__":
