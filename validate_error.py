@@ -19,7 +19,10 @@ class OneOfError(ValidateError):
 
 
 class NumberError(ValidateError):
-    pass
+    def __init__(self, value, minvalue=None, maxvalue=None):
+        super().__init__(value)
+        self.minvalue = minvalue
+        self.maxvalue = maxvalue
 
 
 class NumberTypeError(NumberError):
@@ -28,16 +31,13 @@ class NumberTypeError(NumberError):
 
 
 class NumberLowError(NumberError):
-    def __init__(self, value, minvalue):
-        super().__init__(value)
-        self.minvalue = minvalue
-
     def __str__(self):
         return f"Expected {self.value!r} >= {self.minvalue}"
 
 
-class NuberHighError(NumberError):
-    pass
+class NumberHighError(NumberError):
+    def __str__(self):
+        return f"Expected {self.value!r} <= {self.maxvalue}"
 
 
 class StringError(ValidateError):

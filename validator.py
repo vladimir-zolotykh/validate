@@ -45,7 +45,7 @@ class Number(Validator):
             raise VE.NumberLowError(value, self.minvalue)
         if self.maxvalue < value:
             # raise ValueError(f"Expected {value!r} <= {self.maxvalue}")
-            raise VE.NumberHighError(value)
+            raise VE.NumberHighError(value, maxvalue=self.maxvalue)
 
 
 class String(Validator):
@@ -94,6 +94,10 @@ class TestComponent(unittest.TestCase):
     def test_nok30(self):
         with self.assertRaises(VE.NumberLowError):
             Component("WIDGET", "metal", -5)
+
+    def test_nok35(self):
+        with self.assertRaises(VE.NumberHighError):
+            Component("WIDGET", "metal", 100)
 
     def test_nok40(self):
         with self.assertRaises(VE.NumberTypeError):
