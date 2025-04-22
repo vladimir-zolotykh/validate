@@ -1,64 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
-from abc import ABC, abstractmethod
 import unittest
+import validator_data as VD
 import validate_error as VE
 
 
-class Validator(ABC):
-    def __set_name__(self, owner, name):
-        self.private_name = "_" + name
-        setattr(self, self.private_name, name)
-
-    def __get__(self, obj, objtype=None):
-        return getattr(obj, self.private_name)
-
-    def __set__(self, obj, value):
-        self.validate(value)
-        setattr(obj, self.private_name, value)
-
-    @abstractmethod
-    def validate(self, value):
-        pass
-
-
-class OneOf(Validator):
-    def __init__(self, *options):
-        self.options = options
-
+class OneOf(VD.OneOf0):
     def validate(self, value):
         if value not in self.options:
-            raise VE.OneOfError(value, self.options)
+            raise VE.OneOfError(value, data=self)
 
 
-class Number(Validator):
-    def __init__(self, minvalue=0, maxvalue=None):
-        self.minvalue = minvalue
-        self.maxvalue = maxvalue
-
+class Number(VD.Number0):
     def validate(self, value):
         if not isinstance(value, (int, float)):
-            raise VE.NumberTypeError(value)
+            raise VE.NumberTypeError(value, data=self)
         if value < self.minvalue:
-            raise VE.NumberLowError(value, self.minvalue)
+            raise VE.NumberLowError(value, data=self)
         if self.maxvalue < value:
-            raise VE.NumberHighError(value, maxvalue=self.maxvalue)
+            raise VE.NumberHighError(value, data=self)
 
 
-class String(Validator):
-    def __init__(self, minsize, maxsize, predicate):
-        self.minsize = minsize
-        self.maxsize = maxsize
-        self.predicate = predicate
-
+class String(VD.String0):
     def validate(self, value):
         if len(value) < self.minsize:
-            raise VE.StringShortError(value, self.minsize)
+            raise VE.StringShortError(value, data=self)
         if len(value) > self.maxsize:
-            raise VE.StringLongError(value, maxsize=self.maxsize)
+            raise VE.StringLongError(value, data=self)
         if not self.predicate(value):
-            raise VE.StringPredicateError(value, predicate=self.predicate)
+            raise VE.StringPredicateError(value, data=self)
 
 
 class Component:

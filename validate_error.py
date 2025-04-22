@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+import validator_data as VD
 
 
 class ValidateError(Exception):
@@ -10,8 +11,8 @@ class ValidateError(Exception):
 
 
 class OneOfError(ValidateError):
-    def __init__(self, value, options):
-        self.options = options
+    def __init__(self, value, data: VD.OneOf0):
+        self.options = data.options
         super().__init__(value)
 
     def __str__(self):
@@ -19,10 +20,10 @@ class OneOfError(ValidateError):
 
 
 class NumberError(ValidateError):
-    def __init__(self, value, minvalue=None, maxvalue=None):
+    def __init__(self, value, data: VD.Number0):
         super().__init__(value)
-        self.minvalue = minvalue
-        self.maxvalue = maxvalue
+        self.minvalue = data.minvalue
+        self.maxvalue = data.maxvalue
 
 
 class NumberTypeError(NumberError):
@@ -41,11 +42,11 @@ class NumberHighError(NumberError):
 
 
 class StringError(ValidateError):
-    def __init__(self, value, minsize=None, maxsize=None, predicate=None):
+    def __init__(self, value, data: VD.String0):
         super().__init__(value)
-        self.minsize = minsize
-        self.maxsize = maxsize
-        self.predicate = predicate
+        self.minsize = data.minsize
+        self.maxsize = data.maxsize
+        self.predicate = data.predicate
 
 
 class StringShortError(StringError):
