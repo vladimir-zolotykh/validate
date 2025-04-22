@@ -41,10 +41,8 @@ class Number(Validator):
         if not isinstance(value, (int, float)):
             raise VE.NumberTypeError(value)
         if value < self.minvalue:
-            # raise ValueError(f"Expected {value!r} >= {self.minvalue}")
             raise VE.NumberLowError(value, self.minvalue)
         if self.maxvalue < value:
-            # raise ValueError(f"Expected {value!r} <= {self.maxvalue}")
             raise VE.NumberHighError(value, maxvalue=self.maxvalue)
 
 
@@ -56,15 +54,10 @@ class String(Validator):
 
     def validate(self, value):
         if len(value) < self.minsize:
-            # raise ValueError(f"Expected len({value!r}) >= {self.minsize}")
             raise VE.StringShortError(value, self.minsize)
         if len(value) > self.maxsize:
-            # raise ValueError(f"Expected len({value!r}) <= {self.maxsize}")
             raise VE.StringLongError(value, maxsize=self.maxsize)
         if not self.predicate(value):
-            # raise ValueError(
-            #     f"Expected {self.predicate.__name__}({value!r})" f" is true"
-            # )
             raise VE.StringPredicateError(value, predicate=self.predicate)
 
 
