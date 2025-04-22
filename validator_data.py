@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from typing import Iterable
 from abc import ABC, abstractmethod
 
 
@@ -22,8 +23,8 @@ class Validator(ABC):
 
 
 class OneOf0(Validator):
-    def __init__(self, *options):
-        self.options = options
+    def __init__(self, *options: str):
+        self.options: set[str] = set(options)
 
 
 class Number0(Validator):

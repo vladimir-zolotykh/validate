@@ -3,7 +3,7 @@
 # PYTHON_ARGCOMPLETE_OK
 import unittest
 import validator_data as VD
-import validate_error as VE
+import validator_error as VE
 
 
 class OneOf(VD.OneOf0):
