@@ -57,15 +57,15 @@ class String(Validator):
     def validate(self, value):
         if len(value) < self.minsize:
             # raise ValueError(f"Expected len({value!r}) >= {self.minsize}")
-            raise VE.StringShortError(value)
+            raise VE.StringShortError(value, self.minsize)
         if len(value) > self.maxsize:
             # raise ValueError(f"Expected len({value!r}) <= {self.maxsize}")
-            raise VE.StringLongError(value)
+            raise VE.StringLongError(value, maxsize=self.maxsize)
         if not self.predicate(value):
             # raise ValueError(
             #     f"Expected {self.predicate.__name__}({value!r})" f" is true"
             # )
-            raise VE.StringPredicateError(value)
+            raise VE.StringPredicateError(value, predicate=self.predicate)
 
 
 class Component:
@@ -102,6 +102,18 @@ class TestComponent(unittest.TestCase):
     def test_nok40(self):
         with self.assertRaises(VE.NumberTypeError):
             Component("WIDGET", "metal", "V")
+
+    def test_nok45(self):
+        with self.assertRaises(VE.StringShortError):
+            Component("WI", "metal", 3)
+
+    def test_nok50(self):
+        with self.assertRaises(VE.StringLongError):
+            Component("SCHIZOPHRENIA", "metal", 3)
+
+    def test_nok55(self):
+        with self.assertRaises(VE.StringPredicateError):
+            Component("Widget", "metal", 3)
 
     def test_ok10(self):
         # fmt: off
