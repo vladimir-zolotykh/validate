@@ -35,7 +35,7 @@ class String(VD.String0):
 class Component:
     name = String(3, 10, str.isupper)
     kind = OneOf("wood", "metal", "plastic")
-    quantity = Number(3, 25)
+    quantity = Number(3, 25)  # Number(3, 25, (int, float))
 
     def __init__(self, name, kind, quantity):
         self.kind = kind
