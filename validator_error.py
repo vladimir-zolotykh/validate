@@ -9,6 +9,14 @@ class ValidateError(Exception):
         self.value = value
         super().__init__(value)
 
+    def __getattr__(self, name):
+        if name in self.delegated_fields:
+            return getattr(self.data, name)
+        # fmt: off
+        raise AttributeError(
+            f"{type(self).__name__!r} has no attribute {name!r}")
+        # fmt: on
+
 
 class OneOfError(ValidateError):
     def __init__(self, value, data: VD.OneOf0):
@@ -20,17 +28,11 @@ class OneOfError(ValidateError):
 
 
 class NumberError(ValidateError):
+    delegated_fields = ("minvalue", "maxvalue")
+
     def __init__(self, value, data: VD.Number0):
         super().__init__(value)
         self.data = data
-
-    def __getattr__(self, name):
-        if name in ("minvalue", "maxvalue"):
-            return getattr(self.data, name)
-        # fmt: off
-        raise AttributeError(
-            f"{type(self).__name__!r} has no attribute {name!r}")
-        # fmt: on
 
 
 class NumberTypeError(NumberError):
@@ -49,17 +51,11 @@ class NumberHighError(NumberError):
 
 
 class StringError(ValidateError):
+    delegated_fields = ("minsize", "maxsize", "predicate")
+
     def __init__(self, value, data: VD.String0):
         super().__init__(value)
         self.data = data
-
-    def __getattr__(self, name):
-        if name in ("minsize", "maxsize", "predicate"):
-            return getattr(self.data, name)
-        # fmt: off
-        raise AttributeError(
-            f"{type(self).__name__!r} has no attribute {name!r}")
-        # fmt: on
 
 
 class StringShortError(StringError):
@@ -74,7 +70,4 @@ class StringLongError(StringError):
 
 class StringPredicateError(StringError):
     def __str__(self):
-        # fmt: off
-        return (f"Expected {self.predicate.__name__}({self.value!r})"
-                f" is true")
-        # fmt: on
+        return f"Expected {self.predicate.__name__}({self.value!r}) is true"
