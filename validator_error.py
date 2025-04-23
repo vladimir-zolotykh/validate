@@ -51,9 +51,15 @@ class NumberHighError(NumberError):
 class StringError(ValidateError):
     def __init__(self, value, data: VD.String0):
         super().__init__(value)
-        self.minsize = data.minsize
-        self.maxsize = data.maxsize
-        self.predicate = data.predicate
+        self.data = data
+
+    def __getattr__(self, name):
+        if name in ("minsize", "maxsize", "predicate"):
+            return getattr(self.data, name)
+        # fmt: off
+        raise AttributeError(
+            f"{type(self).__name__!r} has no attribute {name!r}")
+        # fmt: on
 
 
 class StringShortError(StringError):
