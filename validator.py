@@ -57,14 +57,17 @@ class TestComponent(unittest.TestCase):
 
     def test_nok30(self):
         with self.assertRaises(VE.NumberLowError):
+            # validator_error.NumberLowError: Expected -5 >= 3
             Component("WIDGET", "metal", -5)
 
     def test_nok35(self):
         with self.assertRaises(VE.NumberHighError):
+            # NumberHighError: Expected 100 <= 25
             Component("WIDGET", "metal", 100)
 
     def test_nok40(self):
         with self.assertRaises(VE.NumberTypeError):
+            # NumberTypeError: Expected 'V' of type int or float
             Component("WIDGET", "metal", "V")
 
     def test_nok45(self):

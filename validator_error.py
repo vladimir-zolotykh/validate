@@ -22,8 +22,15 @@ class OneOfError(ValidateError):
 class NumberError(ValidateError):
     def __init__(self, value, data: VD.Number0):
         super().__init__(value)
-        self.minvalue = data.minvalue
-        self.maxvalue = data.maxvalue
+        self.data = data
+
+    def __getattr__(self, name):
+        if name in ("minvalue", "maxvalue"):
+            return getattr(self.data, name)
+        # fmt: off
+        raise AttributeError(
+            f"{type(self).__name__!r} has no attribute {name!r}")
+        # fmt: on
 
 
 class NumberTypeError(NumberError):
