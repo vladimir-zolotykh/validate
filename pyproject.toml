@@ -1,0 +1,7 @@
+[tool.black]
+line-length = 72
+experimental-string-processing = true
+[tool.pylsp.plugins.pycodestyle]
+enabled = true
+maxLineLength = 120
+ignore = ["E501"]
